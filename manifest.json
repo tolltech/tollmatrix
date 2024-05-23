@@ -1,0 +1,22 @@
+{
+  "name": "TollMatrix",
+  "short_name":"TollMatrix",
+  "description": "TollMatrixTollMatrixTollMatrix",
+  "version": "0.0.1",
+  "action": {
+      "default_title": "TollMatrix",
+      "default_icon": "icons/chrome.png",
+      "default_popup": "popup.html"
+  },
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [{
+    "matches": ["https://matrix.skbkontur.ru/*"],
+    "js":      ["jquery.js", "common.js", "constants.js", "trigger.js"]
+  }],
+  "content_security_policy": {
+     "extension_pages": "script-src 'self'; object-src 'self'"},
+  "manifest_version": 3
+}
