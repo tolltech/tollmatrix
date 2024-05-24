@@ -65,10 +65,12 @@ setTimeout(function () {
             if (period.length > 0) row.FromDate = period[0].trim();
             if (period.length > 1) row.ToDate = period[1].trim();
 
-            var forkLowers = $('span[data-tid=forkLower]') 
+            var allForks = $('div[data-tid=SalaryForks]');            
+
+            var forkLowers = $(allForks[0]).find('span[data-tid=forkLower]');
             if (forkLowers.length > 0) row.ForkStart = forkLowers[0].innerText;
 
-            var forkUppers = $('span[data-tid=forkUpper]') 
+            var forkUppers = $(allForks[0]).find('span[data-tid=forkUpper]') 
             if (forkUppers.length > 0) row.ForkEnd = forkUppers[0].innerText;            
 
             return row;
@@ -80,7 +82,7 @@ setTimeout(function () {
         button.style = "top:0;right:0;position:fixed;z-index:9999;background:none;border:none;color:rgb(102, 204, 255)";
 
         button.addEventListener('click', () => {
-            DownloadJsonFile('TEST', 'Test.json');
+            DownloadJsonFile(totalRows.values().toArray(), 'Test.json');
         });
 
         document.body.appendChild(button);
