@@ -19,20 +19,58 @@ setTimeout(function () {
             link.click();
         }
 
+        function GetValue(key) {
+            var divLevel = $("div:contains('" + key + "')");
+            //$('[data-tid=PeriodSwitcher] :contains(".")')
+
+            for (var i = 0; i < divLevel.length; ++i) {
+                if (divLevel[i].innerText && divLevel[i].innerText == key){
+                    return divLevel[i].parentNode.lastChild.innerText;
+                }
+            }
+        }
+
+        function GetPeriod(){
+            var spans = $('[data-tid=PeriodSwitcher] :contains(".")');
+            for (var i = 0; i < spans.length; ++i) {
+               var text = spans[i].innerText;
+               if (text) return text;
+            }
+        }
+
         function GetRow() {
             var row = {
-                Name: "Name",
-                FromDate: "FromDate",
-                ToDate: "ToDate",
-                ForkStart: "ForkStart",
-                ForkEnd: "ForkEnd",
-                Level: "Level",
-                Letter: "Letter",
-                Salary: "Salary",
-                GoalSalary: "GoalSalary",
-                ExpectSalary: "ExpectSalary",
-                OprionsProgram: "OptionsProgram"
+                Name: "ERROR",
+                FromDate: "ERROR",
+                ToDate: "ERROR",
+                ForkStart: "ERROR",
+                ForkEnd: "ERROR",
+                Level: "ERROR",
+                Letter: "ERROR",
+                Salary: "ERROR",
+                GoalSalary: "ERROR",
+                ExpectSalary: "ERROR",
+                OprionsProgram: "ERROR"
             };
+
+            row.Level = GetValue('Уровень');
+            row.Letter = GetValue('Оценка');
+            row.Salary = GetValue('Постоянная часть з/п');
+            row.GoalSalary = GetValue('Целевой уровень');
+            row.ExpectSalary = GetValue('Ожидания');
+            row.OprionsProgram = GetValue('Включить в опционную программу');
+
+            row.Name = $('div [data-tid=UserName]').text();
+            var period = GetPeriod().split('-');
+            if (period.length > 0) row.FromDate = period[0].trim();
+            if (period.length > 1) row.ToDate = period[1].trim();
+
+            var forkLowers = $('span[data-tid=forkLower]') 
+            if (forkLowers.length > 0) row.ForkStart = forkLowers[0].innerText;
+
+            var forkUppers = $('span[data-tid=forkUpper]') 
+            if (forkUppers.length > 0) row.ForkEnd = forkUppers[0].innerText;            
+
             return row;
         }
 
@@ -56,11 +94,6 @@ setTimeout(function () {
 
             row = GetRow();
             totalRows.set(row.Name + row.FromDate, row);
-
-            var divLevel = $("div:contains('Уровень'):not(:has(*))");
-            var level = divLevel[0].parentNode.lastChild.innerHTML;
-
-            alert(level);
 
             $('#tollmatrix_download_btn').html('Download ' + totalRows.size + ' rows');
         });
