@@ -57,6 +57,11 @@ setTimeout(function () {
             row = GetRow();
             totalRows.set(row.Name + row.FromDate, row);
 
+            var divLevel = $("div:contains('Уровень'):not(:has(*))");
+            var level = divLevel[0].parentNode.lastChild.innerHTML;
+
+            alert(level);
+
             $('#tollmatrix_download_btn').html('Download ' + totalRows.size + ' rows');
         });
     }
