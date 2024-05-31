@@ -1,5 +1,4 @@
 var wasTollMatrixInjected;
-var totalRows = new Map();
 
 setTimeout(function () {
 
@@ -24,17 +23,17 @@ setTimeout(function () {
             //$('[data-tid=PeriodSwitcher] :contains(".")')
 
             for (var i = 0; i < divLevel.length; ++i) {
-                if (divLevel[i].innerText && divLevel[i].innerText == key){
+                if (divLevel[i].innerText && divLevel[i].innerText == key) {
                     return divLevel[i].parentNode.lastChild.innerText;
                 }
             }
         }
 
-        function GetPeriod(){
+        function GetPeriod() {
             var spans = $('[data-tid=PeriodSwitcher] :contains(".")');
             for (var i = 0; i < spans.length; ++i) {
-               var text = spans[i].innerText;
-               if (text) return text;
+                var text = spans[i].innerText;
+                if (text) return text;
             }
         }
 
@@ -65,29 +64,33 @@ setTimeout(function () {
             if (period.length > 0) row.FromDate = period[0].trim();
             if (period.length > 1) row.ToDate = period[1].trim();
 
-            var allForks = $('div[data-tid=SalaryForks]');            
+            var allForks = $('div[data-tid=SalaryForks]');
 
             var forkLowers = $(allForks[0]).find('span[data-tid=forkLower]');
             if (forkLowers.length > 0) row.ForkStart = forkLowers[0].innerText;
 
-            var forkUppers = $(allForks[0]).find('span[data-tid=forkUpper]') 
-            if (forkUppers.length > 0) row.ForkEnd = forkUppers[0].innerText;            
+            var forkUppers = $(allForks[0]).find('span[data-tid=forkUpper]')
+            if (forkUppers.length > 0) row.ForkEnd = forkUppers[0].innerText;
 
             return row;
         }
 
         const button = document.createElement("button");
         button.id = 'tollmatrix_download_btn';
-        button.textContent = 'Download N rows';
+
+        button.textContent = 'Press Ctrl Shift Alt Enter on Salary page';
         button.style = "top:0;right:0;position:fixed;z-index:9999;background:none;border:none;color:rgb(102, 204, 255)";
 
-        button.addEventListener('click', () => {
-            DownloadJsonFile(totalRows.values().toArray(), 'Test.json');
+        button.addEventListener('click', async () => {
+
+            var report = await getReportFromStorage() || {};
+
+            DownloadJsonFile(Object.values(report), 'MatrixReport_' + new Date().toISOString() + '.json');
         });
 
         document.body.appendChild(button);
 
-        $(document).on('keydown', function (e) {
+        $(document).on('keydown', async function (e) {
             if (!e.ctrlKey || !e.altKey || !e.shiftKey)
                 return;
 
@@ -95,9 +98,14 @@ setTimeout(function () {
                 return;
 
             row = GetRow();
-            totalRows.set(row.Name + row.FromDate, row);
 
-            $('#tollmatrix_download_btn').html('Download ' + totalRows.size + ' rows');
+            var report = await getReportFromStorage() || {};
+
+            report[row.Name + row.FromDate] = row;
+
+            await saveReportToStorage(report);
+
+            $('#tollmatrix_download_btn').html('Download ' + Object.keys(report).length + ' rows');
         });
     }
 }, 5000);

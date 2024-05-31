@@ -18,3 +18,18 @@ function AddEventListener(eventType, action) {
             action(request.payload);
         });
 }
+
+const storageKey = "tollmatrix_report_key";
+const storage = chrome.storage && chrome.storage.local;
+
+async function getReportFromStorage() {
+    const obj = await storage.get();
+    return obj[storageKey];
+}
+
+async function saveReportToStorage(report) {
+    const obj = {};
+    obj[storageKey] = report;
+
+    await storage.set(obj);
+};

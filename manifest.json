@@ -2,6 +2,7 @@
   "name": "TollMatrix",
   "short_name":"TollMatrix",
   "description": "TollMatrixTollMatrixTollMatrix",
+  "permissions": ["storage"],
   "version": "0.0.1",
   "action": {
       "default_title": "TollMatrix",
